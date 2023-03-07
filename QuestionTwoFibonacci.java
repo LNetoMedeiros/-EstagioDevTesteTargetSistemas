@@ -22,7 +22,6 @@ public class QuestionTwoFibonacci {
         } else if (num.intValue() < a.intValue()) {
             return false;
         } else {
-            System.out.println(a);
             return belongsSequential(num, b, b + a);
         }
     }
