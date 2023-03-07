@@ -40,7 +40,7 @@ public class QuestionTreeDailyBilling {
     public static void main(String[] args) {
 
         DailyBilling[] report = new DailyBilling[30];
-        JSONParser jsonParser = new JSONParser(); // instância do Parser do Json
+        JSONParser jsonParser = new JSONParser();
 
         try (FileReader reader = new FileReader("C:/Users/netom/Downloads/dados.json")) {
             JSONArray jsonReport = (JSONArray) jsonParser.parse(reader);
