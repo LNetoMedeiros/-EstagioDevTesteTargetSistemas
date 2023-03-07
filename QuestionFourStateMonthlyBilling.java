@@ -25,7 +25,7 @@ public class QuestionFourStateMonthlyBilling {
         try {
             return (map.get(state) * 100) / sum;
         } catch (Exception e) {
-            return null; // return null if invalid key
+            return null;
         }
     }
 }
