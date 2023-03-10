@@ -1,28 +1,34 @@
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
 
 public class QuestionTwoFibonacci {
     public static void main(String [] args) throws Exception {
         Locale.setDefault(Locale.US);
+        
         Scanner sc = new Scanner(System.in);
         Integer num = sc.nextInt();
-        Boolean belongs = belongsSequential(num, 0, 1);
-        if (belongs) {
+        Boolean belongs = belongsSequentialFibonacci(num);
+        if (belongs.booleanValue()) {
             System.out.println("Belongs...");
-        }
-        else {
+        } else {
             System.out.println("Not Belong...");
         }
+
         sc.close();
     }
 
-    private static Boolean belongsSequential(Integer num, Integer a, Integer b) {
-        if (num.intValue() == a.intValue()) {
+    // Refatoração do método "belongsSequentialFibonacci" para possuir apenas um parâmetro;
+    // A mudança no design foi feita endo em vista a implementação de um possível cenário de testes. 
+    private static Integer a = 0, b = 1;
+    private static Boolean belongsSequentialFibonacci(Integer num) {
+        if (num.intValue() == a) {
             return true;
-        } else if (num.intValue() < a.intValue()) {
+        } else if (num < a) {
             return false;
         } else {
-            return belongsSequential(num, b, b + a);
+            int aux = a;
+            a = b;
+            b += aux;
+            return belongsSequentialFibonacci(num);
         }
     }
 }
