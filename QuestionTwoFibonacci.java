@@ -17,7 +17,7 @@ public class QuestionTwoFibonacci {
     }
 
     // Refatoração do método "belongsSequentialFibonacci" para possuir apenas um parâmetro;
-    // A mudança no design do método foi feita tendo em vista a implementação de um possível cenário de testes. 
+    // A mudança no design do método foi realizada tendo em vista a implementação de um possível cenário de testes. 
     private static Integer a = 0, b = 1;
     private static Boolean belongsSequentialFibonacci(Integer num) {
         if (num.intValue() == a) {
