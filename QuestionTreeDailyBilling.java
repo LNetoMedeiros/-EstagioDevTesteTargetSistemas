@@ -1,75 +1,50 @@
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import java.io.*;
+import org.json.simple.*;
+import org.json.simple.parser.*;
 
 class DailyBilling {
-    private Integer day = null;
     private Double value = null;
     
-    public DailyBilling() {
-    }
-
-    public DailyBilling(Integer day, Double value) {
-        this.day = day;
+    public DailyBilling() {}
+    public DailyBilling( Double value) {
         this.value = value;
-    }
-
-    public void setDay(Integer day) {
-        this.day = day;
     }
 
     public void setValue(Double value) {
         this.value = value;
     }
     
-    public Integer getDay() {
-        return day;
-    }
-    
     public Double getValue() {
         return value;
     }
-
 }
 
 public class QuestionTreeDailyBilling {
+    private static JSONArray jsonReport = null;
+
     public static void main(String[] args) {
+        Double lowerBilling = 0.0, higherBilling = 0.0, totalSumOrMonthlyAverage = 0.0;
+        Integer countDays = 0;
+        
+        readerJson();
 
-        DailyBilling[] report = new DailyBilling[30];
-        JSONParser jsonParser = new JSONParser();
+        for ( int i = 0 ; i < jsonReport.size() ; i++ ) {
 
-        try (FileReader reader = new FileReader("C:/Users/netom/Downloads/dados.json")) {
-            JSONArray jsonReport = (JSONArray) jsonParser.parse(reader);
-            jsonReport.forEach(dailyBilling -> jsonParserDailyBilling( (JSONObject) dailyBilling, report));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+            JSONObject dailyBilling = ( (JSONObject) jsonReport.get(i) );
+            Double value = jsonObjectToDailyBilling(dailyBilling).getValue();
 
-        Double lowerBilling = 0.0, higherBilling = 0.0, sum = 0.0, monthlyAverage = 0.0;
-        Integer countDaysAvarege = 0, countDaysGreater = 0;
-
-        for ( int i = 0 ; i < report.length ; i++ ) {
-            Double value = report[i].getValue();
             if ( i == 0 ) {
                 lowerBilling = value;
                 higherBilling = value;
             } else if ( lowerBilling > value ) {
                 lowerBilling = value;
-            } else if (higherBilling < value ) {
+            } else if ( higherBilling < value ) {
                 higherBilling = value;
             }
 
             if ( value > 0.0 ) {
-                sum += value;
-                countDaysAvarege++;
+                totalSumOrMonthlyAverage += value;
+                countDays++;
             }
         }
 
@@ -80,25 +55,35 @@ public class QuestionTreeDailyBilling {
             System.out.println("Higher Billing: " + higherBilling);
 
 	    // • Número de dias no mês em que o valor de faturamento diário foi superior à média mensal.
-            monthlyAverage = sum / countDaysAvarege;
-            //System.out.println(monthlyAverage);
-            for (int i = 0 ; i < 30 ; i ++) {
-                if (report[i].getValue() > monthlyAverage) countDaysGreater++;
+            totalSumOrMonthlyAverage = totalSumOrMonthlyAverage / countDays;
+            for ( int i = 0 ; i < jsonReport.size() ; i++ ) {
+                JSONObject dailyBilling = ( (JSONObject) jsonReport.get(i) );
+                Double value = jsonObjectToDailyBilling(dailyBilling).getValue();
+                if ( value > 0 && value <= totalSumOrMonthlyAverage ) countDays--;
             }
-            System.out.println("Number of Days With Highest Hilling: " + countDaysGreater);
+            
+            System.out.println( "Number of Days With Highest Hilling: " + countDays );
 
     }
 
-    /**
-     * @param obj    JSONObject que representa o faturamento diário.
-     * @param report Um vetor que corresponde ao relatório de faturamento do mês.
-     * @apiNote      O objetivo desse método é armazenar os dias de faturamento no vetor de relatório de vendas.
-     */
-    private static void jsonParserDailyBilling(JSONObject obj, DailyBilling[] report) {
-        DailyBilling d = new DailyBilling();
-        Integer day = Integer.parseInt(obj.get("dia").toString());
+    private static void readerJson() {
+        JSONParser jsonParser = new JSONParser();
+
+        try ( FileReader reader = new FileReader( "C:/Users/netom/Downloads/dados.json" ) ) {
+            jsonReport = (JSONArray) jsonParser.parse(reader);
+        } catch ( FileNotFoundException e ) {
+            e.printStackTrace();
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        } catch ( ParseException e ) {
+            e.printStackTrace();
+        }
+    }
+
+    private static DailyBilling jsonObjectToDailyBilling(JSONObject obj) {
+        DailyBilling dailyBilling = new DailyBilling();
         Double value = Double.parseDouble(obj.get("valor").toString());
-        d.setDay(day); d.setValue(value);
-        report[day - 1] = d;
+        dailyBilling.setValue(value);
+        return dailyBilling;
     }
 }
