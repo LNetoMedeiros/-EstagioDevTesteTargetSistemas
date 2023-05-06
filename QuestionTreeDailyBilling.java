@@ -6,14 +6,14 @@ public class QuestionTreeDailyBilling {
     private static JSONArray jsonReport = null;
 
     public static void main(String[] args) {
-        Double lowerBilling = 0.0, higherBilling = 0.0, totalSumOrMonthlyAverage = 0.0;
-        Integer countDays = 0;
+        double lowerBilling = 0.0, higherBilling = 0.0, totalSumOrMonthlyAverage = 0.0;
+        int countDays = 0;
         
         readerJson();
 
         for (int i = 0 ; i < jsonReport.size() ; i++) {
             JSONObject dailyBilling = ( (JSONObject) jsonReport.get(i) );
-            Double value = jsonObjectToDailyBilling(dailyBilling).getValue();
+            double value = jsonObjectToDailyBilling(dailyBilling).getValue();
 
             if (i == 0) {
                 lowerBilling = value;
@@ -40,7 +40,7 @@ public class QuestionTreeDailyBilling {
             totalSumOrMonthlyAverage = totalSumOrMonthlyAverage / countDays;
             for (int i = 0 ; i < jsonReport.size() ; i++) {
                 JSONObject dailyBilling = ( (JSONObject) jsonReport.get(i) );
-                Double value = jsonObjectToDailyBilling(dailyBilling).getValue();
+                double value = jsonObjectToDailyBilling(dailyBilling).getValue();
                 if (value > 0 && value <= totalSumOrMonthlyAverage) countDays--;
             }
             System.out.println( "Number of Days With Highest Hilling: " + countDays );
@@ -49,7 +49,7 @@ public class QuestionTreeDailyBilling {
     private static void readerJson() {
         JSONParser jsonParser = new JSONParser();
 
-        try ( FileReader reader = new FileReader("C:/Users/netom/Downloads/dados.json") ) {
+        try ( FileReader reader = new FileReader("./dados.json") ) {
             jsonReport = (JSONArray) jsonParser.parse(reader);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -62,7 +62,7 @@ public class QuestionTreeDailyBilling {
 
     private static DailyBilling jsonObjectToDailyBilling(JSONObject obj) {
         DailyBilling dailyBilling = new DailyBilling();
-        Double value = Double.parseDouble( obj.get("valor").toString() );
+        double value = Double.parseDouble( obj.get("valor").toString() );
         dailyBilling.setValue(value);
         return dailyBilling;
     }
